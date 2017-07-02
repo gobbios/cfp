@@ -1,10 +1,10 @@
 ---
-title: "some notes on sequence analysis"
+title: "sequenceanalysis"
 author: "Christof Neumann"
 date: "`r Sys.Date()`"
 output: rmarkdown::pdf_document
 vignette: >
-  %\VignetteIndexEntry{some notes on sequence analysis}
+  %\VignetteIndexEntry{notes on sequence analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -38,6 +38,39 @@ points(x$pos, predict(mod, type="response"), "l", col="blue", lwd=2, lty=3)
 #legend("bottomleft", lty=c(1,3), col=c("red", "blue"), legend=c("linear", "logistic"), cex=0.5)
 legend(x = 1, y = 0.4, lty=c(1,3), col=c("red", "blue"), legend=c("linear", "logistic"), cex=0.5)
 ```
+
+
+# transition metrics
+
+
+```{r}
+templ <- as.matrix(expand.grid(letters, letters ))
+
+# random names
+testnames <- sample(authornames, 200)
+# create results
+res <- transitions(S = testnames[1], restemplate = templ)
+res <- res[,1:2]
+i=3
+for(i in 1:length(testnames)) {
+  tempres <- transitions(S = testnames[i], restemplate = templ)
+  res <- cbind(res, round(tempres$transall, 3))
+  colnames(res)[ncol(res)] <- paste0("nm", i)
+}
+
+res$RS <- rowMeans(res[, 3:ncol(res)])
+
+res <- res[res$RS > 0, ]
+res <- res[order(res$RS, decreasing = TRUE), ]
+res <- res[, c("e1", "e2", "RS")]
+head(res)
+```
+
+
+
+
+
+
 
 
 

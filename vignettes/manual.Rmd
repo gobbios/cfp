@@ -1,10 +1,10 @@
 ---
-title: "some notes on the cfp package"
+title: "cfpnotes"
 author: "Christof Neumann"
 date: "`r Sys.Date()`"
 output: rmarkdown::pdf_document
 vignette: >
-  %\VignetteIndexEntry{some notes one cfp package}
+  %\VignetteIndexEntry{general notes}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
