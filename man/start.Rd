@@ -3,7 +3,7 @@
 \docType{data}
 \name{start}
 \alias{start}
-\title{Calculate transitions between elements of a sequence}
+\title{Transitions between elements of a sequence}
 \format{An object of class \code{logical} of length 1.}
 \usage{
 start
@@ -18,7 +18,7 @@ start
 \item{restemplate}{an optional matrix with two columns, with the transitions to look for (see details)}
 }
 \description{
-Calculate transitions between elements of a sequence
+Transitions between elements of a sequence
 }
 \details{
 usage of \code{restemplate} might be helpful if sequences are analysed that not all contain the same/complete set of elements. This might be useful if you want to generate matching outputs even though the actual observed sequences (and hence the result of the function) might differ (e.g. in the case of letter transitions in words)

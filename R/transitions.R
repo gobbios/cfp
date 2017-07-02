@@ -1,6 +1,3 @@
-
-
-
 #' Transitions between elements of a sequence
 #'
 #' @param S character, the sequence
@@ -23,7 +20,7 @@
 
 
 # S <- "AAAABB"
-start <- stop <- TRUE
+# start <- stop <- TRUE
 transitions <- function(S, start=TRUE, stop=TRUE, restemplate=NULL) {
   if(length(S) == 1) S <- unlist(strsplit(S, ""))
   S

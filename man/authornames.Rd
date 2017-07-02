@@ -3,7 +3,7 @@
 \docType{data}
 \name{authornames}
 \alias{authornames}
-\title{Author names}
+\title{Author names data set}
 \format{A character vector}
 \usage{
 authornames

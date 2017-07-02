@@ -2,7 +2,7 @@
 % Please edit documentation in R/transf.R
 \name{transf}
 \alias{transf}
-\title{Create histograms of several transformations}
+\title{Histograms of several transformations}
 \usage{
 transf(vec, xround = NULL)
 }
@@ -15,7 +15,7 @@ transf(vec, xround = NULL)
 A plot
 }
 \description{
-Create histograms of several transformations
+Histograms of several transformations
 }
 \examples{
 x <- rnorm(1000, mean=100)

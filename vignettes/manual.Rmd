@@ -13,21 +13,122 @@ vignette: >
 
 ```{r}
 library(cfp)
+library(boot)
 ```
 
 
-```{r, fig.width=5, fig.cap="\\label{fig:1}This is a figure caption."}
-xdata <- data.frame(resp = sample(c(0,1), 1000, TRUE), 
-                    ID = sort(sample(letters[1:20], 1000, TRUE)), 
-                    pred=sort(rnorm(1000))+rnorm(1000), 
-                    cat1 = sample(1:3, 1000, TRUE), 
-                    cat2 = sample(1:3, 1000, TRUE), 
-                    cat3 = sample(1:3, 1000, TRUE))
-plotbinary(xdata, response = "resp", pred = "pred", agg = TRUE, aggcol = "ID", cexfac = 0.3,
-           xlab="predictor", ylab = "response")
+
+
+
+# Figures for raw data
+
+This section describes a few ways on how to plot raw data. In the first part, I focus on binary data, i.e. where the response variable (along the y-axis) is binary 0 or 1. First, I simulate a quick data set. In this example, the response variable is whether or not an individal produced a vocalisation. I also simulate a predictor variable (typically along the x-axis). Here I use hormone levels. Also, these data stem from 20 different individuals. In addition, some of these individuals are males, others are females, and the events (in which calling can occur or not) can be either social or not. I won't explain the data generation in detail, suffice it to say that I siumulated them so that there is some variation that we will be able to see in the figures.
+
+
+```{r}
+set.seed(123)
+N <- 1000
+xdata <- data.frame(male = sample(c(0,1), N, T), horm = rnorm(N), social = sample(c(0,1), N, T))
+ID <- character(N)
+ID[xdata$male == 1] <- sample(letters[1:15], sum(xdata$male == 1), TRUE)
+ID[xdata$male == 0] <- sample(LETTERS[6:20], sum(xdata$male == 0), TRUE)
+xdata$ID <- as.factor(ID)
+randef <- rnorm(nlevels(xdata$ID), mean=0, sd=0.2)[as.numeric(xdata$ID)]
+modmat <- cbind(1, xdata$social, xdata$male, xdata$horm, xdata$male * xdata$horm, randef)
+beta <- c(rnorm(1), -0.5, 1.5, 1, -1, -0.5)
+prob <- inv.logit(modmat%*%beta)
+xdata$voc <- sapply(1:N, function(X) sample(c(0,1), 1, prob = c(1-prob[X,1], prob[X, 1] ) ))
 ```
 
 
-And this is some text to see whether cross-references work, for example to refer to figure \ref{fig:1}.
+First, let's plot the entire data set, i.e. vocalisation as a function of hormone level.
+
+```{r, fig.width=5.5, fig.height=3.2, fig.cap="\\label{fig:1}Vocalizations as function of hormone level."}
+plotbinary(xdata, response = "voc", pred = "horm", agg = FALSE,
+           xlab="hormone levels", ylab = "vocalised or not")
+
+```
+
+Now, one problem with this figure is that the many of the points overlap, although the transparent colour makes this less severe. We can try to bin the data along the x-axis. The `bin-argument` can be used in two different ways. First we can tell the function to produce X bins excatly, here 10. Note that the function adjusts the size of the circles so that the area corresponds to the number of data points a given circle represents. I also decreased the size of the circles so they don't overlap the axes with `cexfac`. 
+
+```{r, fig.width=5.5, fig.height=3.2, fig.cap="\\label{fig:2}Vocalizations as function of hormone level."}
+plotbinary(xdata, response = "voc", pred = "horm", agg = FALSE, bin = 10, cexfac = 0.05,
+           xlab="hormone levels", ylab = "vocalised or not")
+```
+
+If you look closely you might see that the data points are not exactly aligned at 0 (along the x-axis). If this important, we can specify the breakpoints manually and supply them to `bin=`. We just have to make sure that these break points are symmetric around zero.
+
+
+```{r, fig.width=5.5, fig.height=3.2, fig.cap="\\label{fig:3}Vocalizations as function of hormone level."}
+bp <- seq(-3.3, 3.3, by=0.2) # middle section goes from -0.1 to 0.1, so symmetric around 0
+plotbinary(xdata, response = "voc", pred = "horm", agg = FALSE, bin = bp, cexfac = 0.1,
+           xlab="hormone levels", ylab = "vocalised or not")
+```
+
+
+If we want, we can also change some of the graphical parameters.
+
+```{r, fig.width=5.5, fig.height=3.2, fig.cap="\\label{fig:4}Vocalizations as function of hormone level."}
+plotbinary(xdata, response = "voc", pred = "horm", agg = FALSE, bin = bp, cexfac = 0.1,
+           xlab="hormone levels", ylab = "vocalised or not",
+           col = "gold", las = 1, cex.axis = 0.7, cex.lab = 0.4)
+```
+
+
+Since we have data from multiple individuals, we might want to separate them in the figure. One way of doing that is to produce average values along the predictor and response variables, here mean hormone levels and proportion of events with vocalisations. Because these average values usually don't cover the same data range as the raw data, we might want to limit the x-axis. For the y-axis, I usually prefer to leave it at 0/1 because that's the natural range of possible values for any proportion. Also, because in this artifical data all individuals were 'observed' roughly equally often, the size of circles doesn't add much here, although in more unbalanced data sets it might.
+
+```{r, fig.width=5.5, fig.height=3.2, fig.cap="\\label{fig:5}Vocalization proportions as function of hormone level, per individual. Circle size reflects data points per individual."}
+plotbinary(xdata, response = "voc", pred = "horm", agg = TRUE, aggcol = "ID", cexfac = 0.1,
+           xlab="hormone levels", ylab = "vocalisation proportion", xlimsglobal = c(-1, 1))
+```
+
+
+We also have data from males and females, and we might want to split the data presentation according to this factor. This is done via the `pstructure=` argument, which is a named list. Specifically, you have to specify the factor (column) in `xdata` and the level of the factor. Note that I coded males as 1 and females as 0, but it would also work with "female" and "male" if these are levels you chose.
+
+
+```{r, fig.width=5.5, fig.height=3.2, fig.cap="\\label{fig:6}Vocalization proportions as function of hormone level, per individual, for males only. Circle size reflects data points per individual."}
+plotbinary(xdata, response = "voc", pred = "horm", agg = TRUE, aggcol = "ID", cexfac = 0.1,
+           xlab="hormone levels", ylab = "vocalisation proportion", xlimsglobal = c(-1, 1),
+           pstructure = list(male=1))
+```
+
+
+And finally, we might actually produce a multiplot that looks at several factors at the same time. Here, I use the male/female distinction and the factor `social`, which is also either 0 or 1. This is also done in the `pstructure=` argument, which can be a list with multiple items. The titles for the subplots have to be added manually.
+
+
+```{r, fig.width=7.5, fig.height=5.2, fig.cap="\\label{fig:7}Vocalization proportions as function of hormone level, separated by sex and and social. Circle size reflects data points per individual."}
+par(mfcol=c(2,2))
+plotbinary(xdata, response = "voc", pred = "horm", agg = TRUE, aggcol = "ID", cexfac = 0.1,
+           xlab="hormone levels", ylab = "vocalisation proportion", xlimsglobal = c(-1, 1),
+           pstructure = list(male=1, social=1), main="males social")
+plotbinary(xdata, response = "voc", pred = "horm", agg = TRUE, aggcol = "ID", cexfac = 0.1,
+           xlab="hormone levels", ylab = "vocalisation proportion", xlimsglobal = c(-1, 1),
+           pstructure = list(male=1, social=0), main="males not social")
+
+plotbinary(xdata, response = "voc", pred = "horm", agg = TRUE, aggcol = "ID", cexfac = 0.1,
+           xlab="hormone levels", ylab = "vocalisation proportion", xlimsglobal = c(-1, 1),
+           pstructure = list(male=0, social=1), main="females social")
+plotbinary(xdata, response = "voc", pred = "horm", agg = TRUE, aggcol = "ID", cexfac = 0.1,
+           xlab="hormone levels", ylab = "vocalisation proportion", xlimsglobal = c(-1, 1),
+           pstructure = list(male=0, social=0), main="females not social")
+
+```
+
+
+And if you want to check whether these figures reflect the data generation rule you might want to check the results of the GLMM.
+
+```{r, eval=FALSE}
+library(lme4)
+library(effects)
+xdata$sex <- as.factor(c("f", "m")[xdata$male + 1])
+summary(res <- glmer(voc ~ social + sex * horm + (1|ID), xdata, family=binomial))
+plot(allEffects(res), type="response", ylim=c(0,1))
+```
+
+
+
+
+
+
 
 

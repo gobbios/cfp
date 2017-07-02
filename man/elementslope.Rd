@@ -2,7 +2,7 @@
 % Please edit documentation in R/elementslope.R
 \name{elementslope}
 \alias{elementslope}
-\title{Calculate 'slope' of elements within a sequence}
+\title{'Slope' of elements within a sequence according to position in sequence}
 \usage{
 elementslope(s, type = "linear", target = "A")
 }
@@ -17,7 +17,7 @@ elementslope(s, type = "linear", target = "A")
 numeric of length 1
 }
 \description{
-Calculate 'slope' of elements within a sequence
+'Slope' of elements within a sequence according to position in sequence
 }
 \details{
 \code{s} can be provided via a single character, which only works if the elements are themselves only one character, for example "A" in "AAABGACCAAFW"
