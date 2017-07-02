@@ -9,6 +9,7 @@
 #' @param xlimsglobal logical of length 1, or numeric of length two
 #' @param cexfac expansion factor for points
 #' @param bin opitonal, numeric of length 1 or longer, if supplied the data will be binned along 'pred' in either a specific number of bins (if length 1) or along a specific break points (of length >1)
+#' @param \dots more arguments for the plot, for example \code{xlab=}
 #' @importFrom grDevices grey
 #' @importFrom graphics plot
 #' @importFrom stats aggregate
@@ -26,7 +27,7 @@
 
 
 
-plotbinary <- function(xdata, response, pred, pstructure=NULL, agg=FALSE, aggcol=NULL, xlimsglobal=FALSE, cexfac=pi, bin = NULL) {
+plotbinary <- function(xdata, response, pred, pstructure=NULL, agg=FALSE, aggcol=NULL, xlimsglobal=FALSE, cexfac=pi, bin = NULL, ...) {
   # select subset according to 'pstructure'
   pdata <- xdata
 
@@ -53,7 +54,7 @@ plotbinary <- function(xdata, response, pred, pstructure=NULL, agg=FALSE, aggcol
     }
 
 
-    plot(pd[, 3][, 1], pd[, 2][, 1], xlim=xlims, ylim=c(0,1), pch=16, cex=pd$ps, col=grey(level = 0.3, alpha = 0.4), las=1)
+    plot(pd[, 3][, 1], pd[, 2][, 1], xlim=xlims, ylim=c(0,1), pch=16, cex=pd$ps, col=grey(level = 0.3, alpha = 0.4), las=1, ...)
 
   }
 
@@ -75,7 +76,7 @@ plotbinary <- function(xdata, response, pred, pstructure=NULL, agg=FALSE, aggcol
         xlims <- xlimsglobal
       }
 
-      plot(pd[, 2], pd[, 1], xlim=xlims, ylim=c(0,1), pch=16, cex=pd$ps, col=grey(level = 0.3, alpha = 0.4), las=1)
+      plot(pd[, 2], pd[, 1], xlim=xlims, ylim=c(0,1), pch=16, cex=pd$ps, col=grey(level = 0.3, alpha = 0.4), las=1, ...)
 
 
     } else {
@@ -99,7 +100,7 @@ plotbinary <- function(xdata, response, pred, pstructure=NULL, agg=FALSE, aggcol
       }
 
 
-      plot(pd$xvals, pd[, 1], xlim=xlims, ylim=c(0,1), pch=16, cex=pd$ps, col=grey(level = 0.3, alpha = 0.4), las=1)
+      plot(pd$xvals, pd[, 1], xlim=xlims, ylim=c(0,1), pch=16, cex=pd$ps, col=grey(level = 0.3, alpha = 0.4), las=1, ...)
 
     }
 

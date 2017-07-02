@@ -5,7 +5,7 @@
 \title{Plot raw data for binomial data}
 \usage{
 plotbinary(xdata, response, pred, pstructure = NULL, agg = FALSE,
-  aggcol = NULL, xlimsglobal = FALSE, cexfac = pi, bin = NULL)
+  aggcol = NULL, xlimsglobal = FALSE, cexfac = pi, bin = NULL, ...)
 }
 \arguments{
 \item{xdata}{a data frame}
@@ -25,6 +25,8 @@ plotbinary(xdata, response, pred, pstructure = NULL, agg = FALSE,
 \item{cexfac}{expansion factor for points}
 
 \item{bin}{opitonal, numeric of length 1 or longer, if supplied the data will be binned along 'pred' in either a specific number of bins (if length 1) or along a specific break points (of length >1)}
+
+\item{\dots}{more arguments for the plot, for example \code{xlab=}}
 }
 \value{
 A plot
