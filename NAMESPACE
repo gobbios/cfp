@@ -2,8 +2,8 @@
 
 export(elementslope)
 export(plotbinary)
-export(start)
 export(transf)
+export(transitions)
 importFrom(grDevices,grey)
 importFrom(graphics,axis)
 importFrom(graphics,hist)
