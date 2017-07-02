@@ -3,7 +3,7 @@
 # returns NA if length of sequence is one element
 # returns if logistic regression runs into complete separation (e.g. with sequences like AAAABBBB)
 
-#' Calculate 'slope' of elements within a sequence
+#' 'Slope' of elements within a sequence according to position in sequence
 #'
 #' @param s character of length 1 or longer, contains the sequence
 #' @param type character (linear or logistic): which type of regression to use
@@ -86,25 +86,3 @@ elementslope <- function(s, type="linear", target="A") {
   }
   return(res)
 }
-
-
-s <- c("A", "A", "B", "A", "A", "A")
-elementslope(s, "linear")
-elementslope(s, "logistic")
-
-s <- "AAAAABBBB"
-elementslope(s, "linear")
-elementslope(s, "logistic")
-
-s <- "AAA"
-elementslope(s, "linear")
-elementslope(s, "logistic")
-
-s <- "AAABBB"
-elementslope(s, "linear")
-elementslope(s, "logistic")
-
-s <- "AAABBBB"
-elementslope(s, "linear")
-elementslope(s, "logistic")
-

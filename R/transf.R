@@ -1,5 +1,4 @@
-
-#' Create histograms of several transformations
+#' Histograms of several transformations
 #'
 #' @param vec a numerical vector
 #' @param xround numeric, used to round \code{vec} first and the plot a line histogram

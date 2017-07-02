@@ -1,7 +1,7 @@
 
 
 
-#' Calculate transitions between elements of a sequence
+#' Transitions between elements of a sequence
 #'
 #' @param S character, the sequence
 #' @param start logical, should start state be included
