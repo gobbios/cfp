@@ -8,7 +8,10 @@
 #' @param aggcol character, the column name for aggregation
 #' @param xlimsglobal logical of length 1, or numeric of length two
 #' @param cexfac expansion factor for points
-#' @param bin opitonal, numeric of length 1 or longer, if supplied the data will be binned along 'pred' in either a specific number of bins (if length 1) or along a specific break points (of length >1)
+#' @param bin optional, numeric of length 1 or longer, if supplied the data will be binned along 'pred' in either a specific number of bins (if length 1) or along a specific break points (of length >1)
+#' @param pch optional point character (by default 16)
+#' @param col optional colour (by default transparent grey)
+#' @param ylim optional vector of length 2 for y-axis limits (by default c(0, 1))
 #' @param \dots more arguments for the plot, for example \code{xlab=}
 #' @importFrom grDevices grey
 #' @importFrom graphics plot
@@ -27,7 +30,21 @@
 
 
 
-plotbinary <- function(xdata, response, pred, pstructure=NULL, agg=FALSE, aggcol=NULL, xlimsglobal=FALSE, cexfac=pi, bin = NULL, ...) {
+plotbinary <- function(xdata, response, pred, pstructure=NULL, agg=FALSE, aggcol=NULL, xlimsglobal=FALSE, cexfac=pi, bin = NULL, pch=NULL, col=NULL, ylim=NULL, ...) {
+  # get some graphical parameters out of the way (in case one wants to modify pch, etc)
+  # note that the size of symbols only makes sense for circles, i.e. pch=1 or 16 or 21
+  if(is.null(pch)) PCH <- 16 else PCH <- pch
+  if(is.null(col)) COL <- grey(level = 0.3, alpha = 0.4) else COL <- col
+  if(is.null(ylim)) YLIM <- c(0,1) else YLIM <- ylim
+
+  # and return explanation if xlim or cex was supplied
+  # not working yet...
+  #if(hasArg("cex")) stop("please cexfac instead of cex")
+  #if(hasArg("xlim")) stop("please xlimsglobal instead of xlim")
+  # if("cex" %in% names(match.call())) stop("please cexfac instead of cex")
+  # if("xlim" %in% names(match.call())) stop("please xlimsglobal instead of xlim")
+
+
   # select subset according to 'pstructure'
   pdata <- xdata
 
@@ -54,7 +71,7 @@ plotbinary <- function(xdata, response, pred, pstructure=NULL, agg=FALSE, aggcol
     }
 
 
-    plot(pd[, 3][, 1], pd[, 2][, 1], xlim=xlims, ylim=c(0,1), pch=16, cex=pd$ps, col=grey(level = 0.3, alpha = 0.4), las=1, ...)
+    plot(pd[, 3][, 1], pd[, 2][, 1], xlim=xlims, ylim=YLIM, pch=PCH, cex=pd$ps, col=COL, ...)
 
   }
 
@@ -76,7 +93,7 @@ plotbinary <- function(xdata, response, pred, pstructure=NULL, agg=FALSE, aggcol
         xlims <- xlimsglobal
       }
 
-      plot(pd[, 2], pd[, 1], xlim=xlims, ylim=c(0,1), pch=16, cex=pd$ps, col=grey(level = 0.3, alpha = 0.4), las=1, ...)
+      plot(pd[, 2], pd[, 1], xlim=xlims, ylim=YLIM, pch=PCH, cex=pd$ps, col=COL, ...)
 
 
     } else {
@@ -99,12 +116,9 @@ plotbinary <- function(xdata, response, pred, pstructure=NULL, agg=FALSE, aggcol
         xlims <- xlimsglobal
       }
 
-
-      plot(pd$xvals, pd[, 1], xlim=xlims, ylim=c(0,1), pch=16, cex=pd$ps, col=grey(level = 0.3, alpha = 0.4), las=1, ...)
+      plot(pd$xvals, pd[, 1], xlim=xlims, ylim=YLIM, pch=PCH, cex=pd$ps, col=COL, ...)
 
     }
-
-
   }
 
 }
