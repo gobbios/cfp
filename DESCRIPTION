@@ -11,3 +11,4 @@ LazyData: true
 RoxygenNote: 6.0.1
 Suggests: knitr, rmarkdown, boot
 VignetteBuilder: knitr
+Date: 2017-07-03

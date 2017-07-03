@@ -4,25 +4,47 @@
 \alias{transitions}
 \title{Transitions between elements of a sequence}
 \usage{
-transitions(S, start = TRUE, stop = TRUE, restemplate = NULL)
+transitions(S, strucmat = NULL, xstart = TRUE, xstop = FALSE,
+  out = "ml")
 }
 \arguments{
 \item{S}{character, the sequence}
 
-\item{start}{logical, should start state be included}
+\item{strucmat}{an optional matrix with column and row names (see details and examples)}
 
-\item{stop}{logical, should end state be included}
+\item{xstart}{logical, should start state be included}
 
-\item{restemplate}{an optional matrix with two columns, with the transitions to look for (see details)}
+\item{xstop}{logical, should end state be included}
+
+\item{out}{character: either \code{"ml"} or \code{"bayes"}}
 }
 \description{
 Transitions between elements of a sequence
 }
 \details{
-usage of \code{restemplate} might be helpful if sequences are analysed that not all contain the same/complete set of elements. This might be useful if you want to generate matching outputs even though the actual observed sequences (and hence the result of the function) might differ (e.g. in the case of letter transitions in words)
+usage of \code{strucmat} might be helpful for at least tow reasons:
+1) if there are constraints on the possible transitions. For example, a start cannot be followed by a stop (that wouldn't be a sequence). Such impossible transitions are indicated by 0 in this matrix.
+2) if sequences are analysed that not all contain the same/complete set of elements. This might be useful if you want to generate matching outputs even though the actual observed sequences (and hence the result of the function) might differ (e.g. in the case of letter transitions in words)
 }
 \examples{
-S <- "AAAABB"
-transitions(S)
-transitions(S, start=FALSE, stop=FALSE)
+transitions("AAAAABBC", out="ml")
+transitions("AAAAABBC", out="bayes")
+
+smat <- matrix(1, ncol=3, nrow=4);
+colnames(smat) <- c("A", "B", "C"); rownames(smat) <- c("start", "A", "B", "C")
+
+transitions("AAAAABBC", out="ml", strucmat = smat)
+transitions("AAAAABBC", out="bayes", strucmat = smat)
+
+# errors:
+# transitions("AAAAABBC", out="ml", strucmat = smat, xstop = TRUE)
+# transitions("AAAAABBC", out="bayes", strucmat = smat, xstop = TRUE)
+
+# add a stop column, but constrain that starts cannot be followed by stops
+smat <- cbind(smat, 1); colnames(smat)[4] <- "stop"; smat[1, 4] <- 0
+transitions("AAAAABBC", out="ml", strucmat = smat, xstop = TRUE)
+transitions("AAAAABBC", out="bayes", strucmat = smat, xstop = TRUE)
+}
+\references{
+Alger, S. J., Larget, B. R., & Riters, L. V. (2016). A novel statistical method for behaviour sequence analysis and its application to birdsong. Animal behaviour, 116, 181-193.
 }

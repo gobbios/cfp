@@ -1,85 +1,107 @@
 #' Transitions between elements of a sequence
 #'
 #' @param S character, the sequence
-#' @param start logical, should start state be included
-#' @param stop logical, should end state be included
-#' @param restemplate an optional matrix with two columns, with the transitions to look for (see details)
-#' @details usage of \code{restemplate} might be helpful if sequences are analysed that not all contain the same/complete set of elements. This might be useful if you want to generate matching outputs even though the actual observed sequences (and hence the result of the function) might differ (e.g. in the case of letter transitions in words)
+#' @param xstart logical, should start state be included
+#' @param xstop logical, should end state be included
+#' @param strucmat an optional matrix with column and row names (see details and examples)
+#' @param out character: either \code{"ml"} or \code{"bayes"}
+#' @details usage of \code{strucmat} might be helpful for at least tow reasons:
+#' 1) if there are constraints on the possible transitions. For example, a start cannot be followed by a stop (that wouldn't be a sequence). Such impossible transitions are indicated by 0 in this matrix.
+#' 2) if sequences are analysed that not all contain the same/complete set of elements. This might be useful if you want to generate matching outputs even though the actual observed sequences (and hence the result of the function) might differ (e.g. in the case of letter transitions in words)
 #' @export
+#' @references
+#' Alger, S. J., Larget, B. R., & Riters, L. V. (2016). A novel statistical method for behaviour sequence analysis and its application to birdsong. Animal behaviour, 116, 181-193.
 #' @examples
-#' S <- "AAAABB"
-#' transitions(S)
-#' transitions(S, start=FALSE, stop=FALSE)
+#' transitions("AAAAABBC", out="ml")
+#' transitions("AAAAABBC", out="bayes")
+#'
+#' smat <- matrix(1, ncol=3, nrow=4);
+#' colnames(smat) <- c("A", "B", "C"); rownames(smat) <- c("start", "A", "B", "C")
+#'
+#' transitions("AAAAABBC", out="ml", strucmat = smat)
+#' transitions("AAAAABBC", out="bayes", strucmat = smat)
+#'
+#' # errors:
+#' # transitions("AAAAABBC", out="ml", strucmat = smat, xstop = TRUE)
+#' # transitions("AAAAABBC", out="bayes", strucmat = smat, xstop = TRUE)
+#'
+#' # add a stop column, but constrain that starts cannot be followed by stops
+#' smat <- cbind(smat, 1); colnames(smat)[4] <- "stop"; smat[1, 4] <- 0
+#' transitions("AAAAABBC", out="ml", strucmat = smat, xstop = TRUE)
+#' transitions("AAAAABBC", out="bayes", strucmat = smat, xstop = TRUE)
 
 
 
-
-
-# restemplate <- as.matrix(expand.grid(letters[1:4], letters[1:4]))
-# S <- paste(sample(letters[1:3], 3, T), collapse = "")
-
-
-# S <- "AAAABB"
-# start <- stop <- TRUE
-transitions <- function(S, start=TRUE, stop=TRUE, restemplate=NULL) {
+transitions <- function(S, strucmat=NULL, xstart=TRUE, xstop=FALSE, out="ml") {
+  # split sequence
   if(length(S) == 1) S <- unlist(strsplit(S, ""))
-  S
 
   # unique elements
-  if(is.null(restemplate)) {
-    Su <- unique(S)
-  } else {
-    Su <- unique(c(restemplate[, 1], restemplate[, 2]))
+  Su <- unique(S)
+
+  # sanity check
+  if(!is.null(strucmat)) {
+    if(xstop & !"stop" %in% colnames(strucmat)) stop("structure matrix does not contain 'stop' state (in columns)")
+    if(xstart & !"start" %in% rownames(strucmat)) stop("structure matrix does not contain 'start' state (in rows)")
+    # all other states should occur in both row and column names
+    if(sum(Su %in% colnames(strucmat)) != length(Su)) stop("not all states in the structure columns")
+    if(sum(Su %in% rownames(strucmat)) != length(Su)) stop("not all states in the structure rows")
   }
-  Su
-
-  # add start and stop elements
-  if(start) S <- c("start", S)
-  if(stop) S <- c(S, "stop")
-  S
 
 
-  if(is.null(restemplate)) {
-    res <- as.matrix(expand.grid(Su, Su))
-  } else {
-    res <- restemplate
+
+
+  if(xstart) S <- c("start", S)
+  if(xstop) S <- c(S, "stop")
+
+
+  if(is.null(strucmat)) {
+    strucmat <- matrix(1, ncol=length(Su), nrow=length(Su))
+    colnames(strucmat) <- rownames(strucmat) <- Su
+    if(xstart) {
+      strucmat <- rbind(1, strucmat)
+      rownames(strucmat)[1] <- "start"
+    }
+    if(xstop) {
+      strucmat <- cbind(strucmat, 1)
+      colnames(strucmat)[ncol(strucmat)] <- "stop"
+    }
   }
-  res
 
-  if(start) res <- rbind(cbind("start", Su), res)
-  if(stop) res <- rbind(res, cbind( Su, "stop"))
-  res
-  counts <- numeric(nrow(res))
+
+
+  obsmat <- strucmat - strucmat
+
   i=1
   for(i in 1:(length(S)-1)) {
-    xrow <- which(res[, 1] == S[i] & res[, 2] == S[i+1])
-    counts[xrow] <- counts[xrow] + 1
+    obsmat[S[i], S[i+1]] <- obsmat[S[i], S[i+1]] +1
   }
 
 
-  res <- data.frame(e1=res[, 1], e2=res[, 2], count = counts)
-  # calculate overall transitions (incl start and stop)
-  res$transall <- res$count/sum(res$count)
-  # calculate transitions excluding start and stop
-  xrow <- which( (res$e1 != "start" & res$e1 != "stop") & (res$e2 != "start" & res$e2 != "stop") )
-  res$transstrict <- NA
-  res$transstrict[xrow] <- res$count[xrow]/sum(res$count[xrow])
+  if(out == "bayes") {
+    # 'Bayesian' matrix...
+    bmat <- obsmat + strucmat
+    res <- bmat / rowSums(bmat)
+
+    if(NaN %in% res) res[is.nan(res)] <- NA
+    if(Inf %in% res) res[is.infinite(res)] <- NA
+
+    # sanity check: all rowsums should add up to 1 (or zero)
+    if(sum(round(rowSums(res, na.rm = T), 5) %in%  c(0, 1)) != nrow(res)) warning("warning 1: row sums don't add up to 1 (or 0)")
+  }
+
+  if(out == "ml") {
+    res <- obsmat / rowSums(obsmat)
+
+    if(NaN %in% res) res[is.nan(res)] <- NA
+    if(Inf %in% res) res[is.infinite(res)] <- NA
+
+    # sanity check: all rowsums should add up to 1 (or zero)
+    if(sum(round(rowSums(res, na.rm = T), 5) %in% c(0, 1)) != nrow(res)) warning("warning 2: row sums don't add up to 1 (or 0)")
+  }
 
   return(res)
 }
-
-
-# S <- "AAAABB"
-# transitions(S)
-# transitions(S, start=F, stop=F)
-
-
-
-
-# restemplate <- as.matrix(expand.grid(letters[1:3], letters[1:3]))
-# word <- paste(sample(letters[1:3], 25, T), collapse = "")
-# transitions(S = word, start = T, stop = T, restemplate = restemplate)
-
 
 
 

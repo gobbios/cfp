@@ -22,7 +22,7 @@ library(boot)
 
 # Figures for raw data
 
-This section describes a few ways on how to plot raw data. In the first part, I focus on binary data, i.e. where the response variable (along the y-axis) is binary 0 or 1. First, I simulate a quick data set. In this example, the response variable is whether or not an individal produced a vocalisation. I also simulate a predictor variable (typically along the x-axis). Here I use hormone levels. Also, these data stem from 20 different individuals. In addition, some of these individuals are males, others are females, and the events (in which calling can occur or not) can be either social or not. I won't explain the data generation in detail, suffice it to say that I siumulated them so that there is some variation that we will be able to see in the figures.
+This section describes a few ways on how to plot raw data. In the first part, I focus on binary data, i.e. where the response variable (along the y-axis) is binary 0 or 1. First, I simulate a quick data set. In this example, the response variable is whether or not an individal produced a vocalisation. I also simulate a predictor variable (typically along the x-axis). Here I use hormone levels. Also, these data stem from 30 different individuals. In addition, some of these individuals are males, others are females, and the events (in which calling can occur or not) can be either social or not. I won't explain the data generation in detail, suffice it to say that I siumulated them so that there is some variation that we will be able to see in the figures.
 
 
 ```{r}
