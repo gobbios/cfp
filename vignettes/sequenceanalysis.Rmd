@@ -3,6 +3,8 @@ title: "sequenceanalysis"
 author: "Christof Neumann"
 date: "`r Sys.Date()`"
 output: rmarkdown::pdf_document
+bibliography: refs.bib
+csl: animal-behaviour.csl
 vignette: >
   %\VignetteIndexEntry{notes on sequence analysis}
   %\VignetteEngine{knitr::rmarkdown}
@@ -46,29 +48,59 @@ legend(x = 1, y = 0.4, lty=c(1,3), col=c("red", "blue"), legend=c("linear", "log
 
 # transition metrics
 
-This section won't yet work with the newly-written `transitions()` function...
 
 ```{r, eval=FALSE}
+smat <- matrix(1, ncol=26, nrow=26); rownames(smat) <- colnames(smat) <- letters
+
+
 templ <- as.matrix(expand.grid(letters, letters ))
 
 # random names
-testnames <- sample(authornames, 200)
+testnames <- sample(authornames, 400)
 # create results
-res <- transitions(S = testnames[1], restemplate = templ)
-res <- res[,1:2]
-i=3
+res <- transitions(S = testnames[1], strucmat = smat, xstart = F, xstop = F, out = "bayes")
+res <- mat2long(res)[,1:2]
+
+i=1
 for(i in 1:length(testnames)) {
-  tempres <- transitions(S = testnames[i], restemplate = templ)
-  res <- cbind(res, round(tempres$transall, 3))
+  tempres <- mat2long(transitions(S = testnames[i], strucmat = smat, xstart = F, xstop = F, out = "bayes"))
+  res <- cbind(res, round(tempres$val, 4))
   colnames(res)[ncol(res)] <- paste0("nm", i)
 }
 
-res$RS <- rowMeans(res[, 3:ncol(res)])
+res$RS <- rowMeans(res[, 3:ncol(res)], na.rm = T)
 
 res <- res[res$RS > 0, ]
 res <- res[order(res$RS, decreasing = TRUE), ]
-res <- res[, c("e1", "e2", "RS")]
-head(res)
+res <- res[, c("Rx", "Cx", "RS")]
+head(res, 10)
+```
+
+
+
+# entropy
+
+One simulation to illustrate entropy is the following. We assume Kershenbaum's [-@kershenbaum2015a, p.1455] description of entropy as measure of "the unpredictability of a sequence, or the lack of uniformity of a sequence, so that a completely predictable sequence (e.g. consisting of the same element repeated over and over) would have an entropy of zero, whereas a completely unpredictable (random) sequence would have an entropy of one". We can generate sequences of 100 elements, randomly chosen from ten letters. But we make sure that the random choice of letters is 'systematic' such that at one extreme, all letters are equally likely to occur, while at the other extreme only A should be chosen. For this we vary the shape-2 paramter of a beta distribution.
+
+So, at large *shape* values, we have random sequences and hence larger entropy than at small *shape* values (more biased towards repeating earlier letters (e.g. only A)) and hence small entropy values. 
+
+
+```{r}
+N <- 1000
+shp2 <- runif(N, 0.05, 1)
+LET <- rev(LETTERS[1:10])
+en1 <- en2 <- numeric(N)
+i=1
+for(i in 1:N) {
+  probs <- as.numeric(table(cut(rbeta(1000, shape1 = 1, shp2[i]), breaks=seq(0,1,0.1) )))/1000
+  s <- sample(LET, 100, replace = T, prob = probs)
+  en1[i] <- entropy(s, 1)
+  en2[i] <- entropy(s, 2)
+}
+
+par(mfrow=c(1,2))
+plot(shp2, en1, pch=16, col=grey(0.3, 0.1))
+plot(shp2, en2, pch=16, col=grey(0.3, 0.1))
 ```
 
 
@@ -94,4 +126,4 @@ head(res)
 + NMI
 
 
-
+# References
