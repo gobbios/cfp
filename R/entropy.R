@@ -36,6 +36,9 @@ entropy <- function(S, n=1) {
     res <- sum(pr * (-1) * log(pr, 2))
   }
 
+  if(n == 0) {
+    res <- log(length(table(S)), 2)
+  }
+
   return(res)
 }
-
