@@ -1,7 +1,7 @@
 Package: cfp
 Type: Package
 Title: Christof's function package
-Version: 0.1.01
+Version: 0.1.02
 Author: Christof Neumann
 Maintainer: Christof Neumann <christofneumann1@gmail.com>
 Description: A collection of utility functions.
@@ -11,4 +11,4 @@ LazyData: true
 RoxygenNote: 6.0.1
 Suggests: knitr, rmarkdown, boot, tau, entropy, RecordLinkage
 VignetteBuilder: knitr
-Date: 2017-07-15
+Date: 2017-08-11

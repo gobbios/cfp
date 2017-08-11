@@ -4,7 +4,7 @@
 \alias{drawcircle}
 \title{add a circle to a plot}
 \usage{
-drawcircle(x, y, rad, npoints = 50, border = NA, ...)
+drawcircle(x, y, rad, npoints = 70, border = NA, ...)
 }
 \arguments{
 \item{x}{numeric, x location}

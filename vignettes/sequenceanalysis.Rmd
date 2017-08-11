@@ -104,6 +104,52 @@ plot(shp2, en2, pch=16, col=grey(0.3, 0.1))
 ```
 
 
+# Levenshtein distance
+
+This is essentially a measure of how many steps are necessary to convert one string into another. If two sequences are similar to each other, few steps are necessary (or none at all if two sequences are identical). If two sequences are very different a large number of edits is necessary. Possible edits of sequences/strings are insertions, deletions and substitutions. The classic example is the transition from *kitten* to *sitting*.
+
++ **k**itten -> **s**itten (substitute "s" for "k")
++ sitt**e**n -> sitt**i**n (substitute "i" for "e")
++ sittin -> sittin**g** (insert "g")
+
+Now, we can adapt this measure to sequences of communication signals. For example, a squences of two grunts and a scream is very similar to a sequence of grunt and scream, which requires only one deletion:
+
+```{r}
+s1 <- c("grunt", "grunt", "scream")
+s2 <- c("grunt", "scream")
+lss(s1, s2, normalize = FALSE)
+```
+
+In contrast, a sequence of grunt, scream is more different from the sequence lip smack, wave, moan, grunt:
+
+```{r}
+s1 <- c("grunt", "scream")
+s2 <- c("lip smack", "wave", "moan", "grunt")
+lss(s1, s2, normalize = FALSE)
+```
+
+Finally, we can normalize the LD so that it ranges between 0 and 1. This is because the theoretical maximum LD is the length of the longer string/sequence. However, during this normalization step, we actually also reverse the interpretation, so the measure become a *similarity* index. Hence, very similar sequences will have values close to 1 and very different sequences will have values closer to 0.
+
+```{r}
+s1 <- c("grunt", "grunt", "scream")
+s2 <- c("grunt", "scream")
+lss(s1, s2, normalize = TRUE)
+
+s1 <- c("grunt", "scream")
+s2 <- c("lip smack", "wave", "moan", "grunt")
+lss(s1, s2, normalize = TRUE)
+```
+
+
+
+
+
+
+
+
+
+
+
 
 # Things to be included unary
 

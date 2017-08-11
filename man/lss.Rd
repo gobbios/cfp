@@ -4,12 +4,14 @@
 \alias{lss}
 \title{Levenshtein similarity (based on Levenshtein distance)}
 \usage{
-lss(S1, S2)
+lss(S1, S2, normalize = TRUE)
 }
 \arguments{
 \item{S1}{character of length 1 or longer, contains the sequence}
 
 \item{S2}{character of length 1 or longer, contains the sequence}
+
+\item{normalize}{logical, should the distance measure be normalized (by default: \code{TRUE})}
 }
 \value{
 numeric value of Levenshtein similarity
@@ -31,4 +33,9 @@ RecordLinkage::levenshteinSim(S1, S2)
 S3 <- "CBX"
 lss(S1, S3)
 lss(S2, S3)
+# and with character vectors:
+S1 <- c("one", "two", "three")
+S2 <- c("eins", "two", "three")
+lss(S1, S2)
+lss("ABC", "DBC")
 }
