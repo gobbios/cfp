@@ -1,7 +1,7 @@
 Package: cfp
 Type: Package
 Title: Christof's function package
-Version: 0.1.03
+Version: 0.1.04
 Author: Christof Neumann
 Maintainer: Christof Neumann <christofneumann1@gmail.com>
 Description: A collection of utility functions.
