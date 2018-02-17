@@ -1,17 +1,20 @@
 #' balance a data set according to some grouping factor(s)
 #'
 #' @param xdata a \code{data.frame}
-#' @param whattobalance a character vector with column names over which to balance
+#' @param whattobalance a character vector with column names. The corresponding columns typically are either factor or character.
 #' @param n integer, the number of cases to select for each factor level (or combination of factor levels)
 #' @details the function requires either one or two factors to be balanced over
 #'
+#' if \code{n} is larger than the largest possible number, there will be a warning to that effect and \code{n} will be reset to the largest possible number, i.e. the function behaves as if \code{n = NULL} (the default)
+#'
+#' @author Christof Neumann
 #' @return a list with 5 items
 #' \itemize{
-#' \item \code{$seldata} the subset of xdata with the selected rows
-#' \item \code{$unseldata} the subset of xdata with the rows that were not selected
+#' \item \code{$seldata} the subset of \code{xdata} with the selected rows
+#' \item \code{$unseldata} the subset of \code{xdata} with the rows that were not selected
 #' \item \code{$sel} the row indices of the selected rows
 #' \item \code{$unsel} the row indices of the rows not selected
-#' \item \code{$factors} the balance factor(s)
+#' \item \code{$factors} the balance factor(s) (= \code{whattobalance})
 #' }
 #' @export
 #'
@@ -47,10 +50,12 @@
 
 balancedataset <- function(xdata, whattobalance, n = NULL) {
   if(sum(whattobalance %in% colnames(xdata)) != length(whattobalance)) stop("not all factors found in data set", call. = FALSE)
-
+  # transform into character, so as not having to deal with (empty) factor levels
   fac1 <- as.character(xdata[, whattobalance[1]])
 
+  # if there is only one such factor to balance over
   if(length(whattobalance) == 1) {
+    # get max n
     maxn <- min(table(fac1))
     if(!is.null(n)) {
       if(n > maxn) {
@@ -59,6 +64,8 @@ balancedataset <- function(xdata, whattobalance, n = NULL) {
       }
     }
     if(is.null(n)) n <- maxn
+    # if maxn >= 2 means that we can sample without issue
+    # if maxn == 1 means that if there is only one possibility, then sample(36, size = 1) would not return 36 each time but a value between 1 and 36, which is undesired behaviour and I haven't found a way around this yet (sample.int()?)
     if(maxn > 1) {
       x <- as.matrix(data.frame(table(fac1)))
       sel <- as.numeric(apply(x, 1, function(X) sample(which(fac1 == X[1]), size = n)))

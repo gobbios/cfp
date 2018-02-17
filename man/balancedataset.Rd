@@ -9,18 +9,18 @@ balancedataset(xdata, whattobalance, n = NULL)
 \arguments{
 \item{xdata}{a \code{data.frame}}
 
-\item{whattobalance}{a character vector with column names over which to balance}
+\item{whattobalance}{a character vector with column names. The corresponding columns typically are either factor or character.}
 
 \item{n}{integer, the number of cases to select for each factor level (or combination of factor levels)}
 }
 \value{
 a list with 5 items
 \itemize{
-\item \code{$seldata} the subset of xdata with the selected rows
-\item \code{$unseldata} the subset of xdata with the rows that were not selected
+\item \code{$seldata} the subset of \code{xdata} with the selected rows
+\item \code{$unseldata} the subset of \code{xdata} with the rows that were not selected
 \item \code{$sel} the row indices of the selected rows
 \item \code{$unsel} the row indices of the rows not selected
-\item \code{$factors} the balance factor(s)
+\item \code{$factors} the balance factor(s) (= \code{whattobalance})
 }
 }
 \description{
@@ -28,6 +28,8 @@ balance a data set according to some grouping factor(s)
 }
 \details{
 the function requires either one or two factors to be balanced over
+
+if \code{n} is larger than the largest possible number, there will be a warning to that effect and \code{n} will be reset to the largest possible number, i.e. the function behaves as if \code{n = NULL} (the default)
 }
 \examples{
 set.seed(1)
@@ -51,4 +53,7 @@ x <- sapply(1:50, function(X){
 table(x)
 
 
+}
+\author{
+Christof Neumann
 }
