@@ -114,5 +114,6 @@ resamplefunction <- function(model, dat, N, termsref = NULL, useparallel = TRUE,
     }
   }
 
+  ndata$orifit <- predict(model, newdata = ndata, re.form = NULL, type = "response")
   return(list(ndata, allres))
 }
