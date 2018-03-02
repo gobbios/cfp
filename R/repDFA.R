@@ -16,7 +16,7 @@
 #' }
 #' @details information for second function will only be returned if there were at least 2 functions calculated
 #' @export
-#' @import candisc
+#' @importFrom candisc candisc
 #' @author Christof Neumann
 #' @references Berthet, M., Neumann, C., Mesbahi, G., Cäsar, C., & Zuberbühler, K. (2018). Contextual encoding in titi monkey alarm call sequences. Behavioral Ecology and Sociobiology, 72(1), 8.
 #'

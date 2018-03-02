@@ -1,3 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 testlab/
+^\.httr-oauth$
+Rplots.pdf
