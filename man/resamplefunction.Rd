@@ -32,6 +32,9 @@ a list with two items:
 \description{
 Resampling model estimates from glmmADMB fits
 }
+\details{
+the function needs data sets in which columns have one dimension only (at least on the predictor side). If you get a warning or error, please check \code{unlist(lapply(<yourdata>, ncol))} to find columns that have more than one dimension. This could happen, for example, if you applied \code{scale()} to a numerical column. You could use \code{<yourdata>$mycol <- as.numeric(<yourdata>$mycol)} to fix this issue. Also, the model has to be refitted after such an operation.
+}
 \examples{
 \dontrun{
 library(glmmADMB)
@@ -54,6 +57,19 @@ resamplefunction(res, xdata, N = 2, termsref = "pred3")
 resamplefunction(res, xdata, N = 2, termsref = "pred2")
 # keep $pred1 at reference and $pred3 at 0
 resamplefunction(res, xdata, N = 2, termsref = c("pred1", "pred3"))
+
+epil2$subject <- factor(epil2$subject)
+(fm <- glmmadmb(y ~ Base*trt + Age + Visit + (Visit|subject),
+                data = epil2, family = "nbinom"))
+resamplefunction(model = fm, dat = epil2, N = 3, stepsalong = 3)
+
+library(lme4)
+(fm1 <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy))
+resamplefunction(model = fm1, dat = sleepstudy, N = 3, stepsalong = 3)
+
+(gm1 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd),
+              data = cbpp, family = binomial))
+resamplefunction(model = gm1, dat = cbpp, N = 3, stepsalong = 3)
 }
 
 }
