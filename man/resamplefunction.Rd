@@ -34,6 +34,8 @@ Resampling model estimates from glmmADMB fits
 }
 \details{
 the function needs data sets in which columns have one dimension only (at least on the predictor side). If you get a warning or error, please check \code{unlist(lapply(<yourdata>, ncol))} to find columns that have more than one dimension. This could happen, for example, if you applied \code{scale()} to a numerical column. You could use \code{<yourdata>$mycol <- as.numeric(<yourdata>$mycol)} to fix this issue. Also, the model has to be refitted after such an operation.
+
+In the case of glmmADMB, if the model fitting fails in one or more of the resampling runs, this would normally break the loop. The function currently uses a form of error catching that returns \code{NA} as predicted values for such cases. The function will produce a message informing you that this happend. You might want to increase \code{N} so that you actually end up with the number of valid samples intended.
 }
 \examples{
 \dontrun{

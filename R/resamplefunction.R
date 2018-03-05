@@ -22,6 +22,8 @@
 #'  }
 #' @export
 #' @details the function needs data sets in which columns have one dimension only (at least on the predictor side). If you get a warning or error, please check \code{unlist(lapply(<yourdata>, ncol))} to find columns that have more than one dimension. This could happen, for example, if you applied \code{scale()} to a numerical column. You could use \code{<yourdata>$mycol <- as.numeric(<yourdata>$mycol)} to fix this issue. Also, the model has to be refitted after such an operation.
+#'
+#' In the case of glmmADMB, if the model fitting fails in one or more of the resampling runs, this would normally break the loop. The function currently uses a form of error catching that returns \code{NA} as predicted values for such cases. The function will produce a message informing you that this happend. You might want to increase \code{N} so that you actually end up with the number of valid samples intended.
 #' @examples
 #' \dontrun{
 #' library(glmmADMB)
@@ -88,6 +90,9 @@ resamplefunction <- function(model, dat, N, termsref = NULL, useparallel = TRUE,
   # get the terms and combinations of values for the prediction, depending on model type (glmmadmb or lmer/glmer)
 
   if(class(model) == "lmerMod" | class(model) == "glmerMod") {
+    # check out lme4:::terms.merMod()
+
+
     # m <- model@frame
     # str(m)
     # attr(m, "terms")
@@ -182,13 +187,23 @@ resamplefunction <- function(model, dat, N, termsref = NULL, useparallel = TRUE,
       on.exit(stopCluster(cl))
     }
     if(class(model) == "glmmadmb") {
-      allres <- foreach(1:N, .packages = "glmmADMB", .combine = 'cbind') %dopar% {
+      allres <- foreach(1:N, .packages = "glmmADMB", .errorhandling = "pass") %dopar% { #, .combine = 'cbind'
         tempdata <- dat
         tempdata <- tempdata[sample(1:nrow(tempdata), replace = TRUE), ]
         xres <- update(model, data = tempdata)
         predict(xres, newdata = ndata, re.form = NA, type = "response")
       }
       on.exit(stopCluster(cl))
+
+      # some data handling if there were errors during some of the resampling runs:
+      errors <- which(unlist(lapply(allres, function(X) "message" %in% names(X))))
+      if(length(errors) >= 1) {
+        for(i in errors) {
+          allres[[i]] <- rep(NA, nrow(ndata))
+        }
+        message("during ", errors, " runs there were problems and the results for these runs are returned as NA")
+      }
+      allres <- do.call("cbind", allres)
     }
 
   }
