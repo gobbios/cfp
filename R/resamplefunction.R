@@ -201,7 +201,7 @@ resamplefunction <- function(model, dat, N, termsref = NULL, useparallel = TRUE,
         for(i in errors) {
           allres[[i]] <- rep(NA, nrow(ndata))
         }
-        message("during ", errors, " runs there were problems and the results for these runs are returned as NA")
+        message("during ", length(errors), " run(s) there were problems and the results for these runs are returned as NA")
       }
       allres <- do.call("cbind", allres)
     }
