@@ -65,39 +65,30 @@ resamplefunction <- function(model, dat, N, termsref = NULL, useparallel = TRUE,
   # sometimes, data columns in the data set might be matrices with 1 column (which appear as 'nmatrix.1' data classes in the model objects)
   # eg. when data were subjected to 'scale()'
   # for now, make sure that columns are vectors (not matrices)
+  # at least for the predictor terms (a matrix as a *response* could be fine, e.g. in "cbind(x, y) ~ ... family = binomial")
   if(class(model) == "lmerMod" | class(model) == "glmerMod") {
-    datclasses <- as.character(unlist(lapply(model@frame, class)))
+    # datclasses <- as.character(unlist(lapply(model@frame, class)))
+    temp <- attr(terms(model), "term.labels")
+    if(length(grep(":", x = temp)) >= 1) temp <- temp[-c(grep(":", x = temp))]
+    if(length(grep("|", x = temp, fixed = TRUE)) >= 1) temp <- temp[-c(grep("|", x = temp, fixed = TRUE))]
+    datclasses <- as.character(unlist(lapply(model@frame, class))[temp])
   }
   if(class(model) == "glmmadmb") {
-    datclasses <- as.character(unlist(lapply(model$frame, class)))
+    # datclasses <- as.character(unlist(lapply(model$frame, class)))
+    temp <- attr(terms(formula(model$call)), "term.labels")
+    if(length(grep(":", x = temp)) >= 1) temp <- temp[-c(grep(":", x = temp))]
+    if(length(grep("|", x = temp, fixed = TRUE)) >= 1) temp <- temp[-c(grep("|", x = temp, fixed = TRUE))]
+    datclasses <- as.character(unlist(lapply(model$frame, class))[temp])
   }
   if("matrix" %in% datclasses) {
-    warning("You have at least one matrix in your data set. Please transform into a vector.", call. = FALSE)
+    warning("You have at least one matrix in your data set that among the predictors. Please transform into a vector.", call. = FALSE)
   }
-  rm(datclasses)
-  # tempclasses <- unlist(lapply(dat, class))
-  # if("matrix" %in% tempclasses) {
-  #   repl <- which(tempclasses == "matrix")
-  #   for(i in repl) {
-  #     dat[, names(tempclasses)[i]] <- as.numeric(dat[, names(tempclasses)[i]])
-  #   }
-  #   model <- update(model, data = dat)
-  # }
-  # rm(tempclasses, repl)
-
-
+  rm(datclasses, temp)
 
   # get the terms and combinations of values for the prediction, depending on model type (glmmadmb or lmer/glmer)
 
   if(class(model) == "lmerMod" | class(model) == "glmerMod") {
-    # check out lme4:::terms.merMod()
-
-
-    # m <- model@frame
-    # str(m)
-    # attr(m, "terms")
-    # unlist(attr(attr(m, "terms"), "predvars.random"))
-
+    # CHECK OUT: lme4:::terms.merMod()
     # all terms for predictor variables (including interactions)
     allterms <- attr(attr(model@frame, "terms"), "term.labels")
     # data classes (for main effects, but also includes the response and the random effects [and maybe even an offset if present?])
@@ -116,13 +107,6 @@ resamplefunction <- function(model, dat, N, termsref = NULL, useparallel = TRUE,
     datclasses <- attr(x = model$terms, which = "dataClasses")
     # get main effect names
     prednames <- datclasses[names(datclasses) %in% allterms]
-
-    # # take all terms to vary
-    # xterms <- attr(x = model$terms, which = "term.labels")
-    # # get data classes
-    # dc <- attr(x = model$terms, which = "dataClasses")
-    # # get main effects names
-    # xterms <- dc[names(dc) %in% xterms]
   }
 
 
@@ -201,7 +185,7 @@ resamplefunction <- function(model, dat, N, termsref = NULL, useparallel = TRUE,
         for(i in errors) {
           allres[[i]] <- rep(NA, nrow(ndata))
         }
-        message("during ", length(errors), " run(s) there were problems and the results for these runs are returned as NA")
+        message("during", errors, "runs there were problems and the results for these runs are returned as NA")
       }
       allres <- do.call("cbind", allres)
     }
