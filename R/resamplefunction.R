@@ -185,7 +185,7 @@ resamplefunction <- function(model, dat, N, termsref = NULL, useparallel = TRUE,
         for(i in errors) {
           allres[[i]] <- rep(NA, nrow(ndata))
         }
-        message("during", errors, "runs there were problems and the results for these runs are returned as NA")
+        message("during", length(errors), "runs there were problems and the results for these runs are returned as NA")
       }
       allres <- do.call("cbind", allres)
     }
@@ -205,6 +205,6 @@ resamplefunction <- function(model, dat, N, termsref = NULL, useparallel = TRUE,
 
   # predict for original data
   ndata$orifit <- predict(model, newdata = ndata, re.form = NA, type = "response")
-  return(list(ndata, allres))
+  return(list(dat = ndata, bs = allres))
 }
 
