@@ -13,7 +13,7 @@
 #' @importFrom foreach foreach '%dopar%'
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @importFrom iterators icount
-#' @importFrom stats predict update
+#' @importFrom stats predict update formula terms
 #' @importFrom lme4 ranef
 #' @return a list with two items:
 #'  \itemize{
