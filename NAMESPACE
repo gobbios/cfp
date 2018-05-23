@@ -2,6 +2,7 @@
 
 export(balancedataset)
 export(coloralpha)
+export(decaxis)
 export(drawcircle)
 export(elementprop)
 export(elementslope)
