@@ -15,13 +15,13 @@ test_that("balanced data sets", {
   expect_true(check2)
 
   # another one with combinations
-  set.seed(123)
-  xdata <- data.frame(var = rnorm(50), fac1 = sample(letters[1:3], 50, TRUE), fac2 = sample(LETTERS[20:22], 50, TRUE))
-  table(xdata$fac1, xdata$fac2)
+  # set.seed(123)
+  xdata <- data.frame(var = rnorm(500), fac1 = sample(letters[1:3], 500, TRUE), fac2 = sample(LETTERS[20:22], 500, TRUE))
+  xtab <- min(table(xdata$fac1, xdata$fac2))
   res <- balancedataset(xdata, whattobalance = c("fac1", "fac2"))$seldata
   tab <- table(res$fac1, res$fac2)
-  expect_equal(max(tab), 3)
-  expect_equal(min(tab), 3)
+  expect_equal(max(tab), xtab)
+  expect_equal(min(tab), xtab)
 
   res <- balancedataset(xdata, whattobalance = c("fac1", "fac2"), n = 2)$seldata
   tab <- table(res$fac1, res$fac2)
@@ -29,10 +29,10 @@ test_that("balanced data sets", {
   expect_equal(min(tab), 2)
 
   # require too large a number of cases -> warning and resetting of n
-  expect_warning(res <- balancedataset(xdata, whattobalance = c("fac1", "fac2"), n = 5)$seldata)
+  expect_warning(res <- balancedataset(xdata, whattobalance = c("fac1", "fac2"), n = 100)$seldata)
   tab <- table(res$fac1, res$fac2)
-  expect_equal(max(tab), 3)
-  expect_equal(min(tab), 3)
+  expect_equal(max(tab), xtab)
+  expect_equal(min(tab), xtab)
 
   # return identical data if the supplied data are already perfectly balanced
   newdata <- balancedataset(xdata, whattobalance = c("fac1", "fac2"))$seldata
@@ -46,9 +46,5 @@ test_that("balanced data sets", {
   # remove one combination so that the function will fail
   xdata <- xdata[-c(which(xdata$fac1 == "a" & xdata$fac2 == "U")), ]
   expect_error(balancedataset(xdata, whattobalance = c("fac1", "fac2")))
-
-
-
-
 
 })

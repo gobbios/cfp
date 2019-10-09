@@ -29,12 +29,13 @@ only combinations that actually occur in the data are returned
 if \code{res = 2}, the numerical variable will be returned as range
 }
 \examples{
+set.seed(123)
 xdata <- data.frame(pred1 = rnorm(100),
-                    pred2 = sample(c(0, 1), 100, T),
-                    fac1 = sample(letters[1:3], 100, T),
-                    fac2 = sample(LETTERS[7:8], 100, T))
+                    pred2 = sample(c(0, 1), 100, TRUE),
+                    fac1 = sample(letters[1:3], 100, TRUE),
+                    fac2 = sample(LETTERS[7:8], 100, TRUE))
 expand(~pred1 + fac1 + fac2, xdata, res = 3)
 expand(~pred2 + fac1 + fac2, xdata, res = 3)
-adding columns
+# adding columns
 expand(~pred2 + fac1 + fac2, xdata, res = 3, x = -17, y = "gg")
 }

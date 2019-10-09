@@ -32,7 +32,7 @@ the function requires either one or two factors to be balanced over
 if \code{n} is larger than the largest possible number, there will be a warning to that effect and \code{n} will be reset to the largest possible number, i.e. the function behaves as if \code{n = NULL} (the default)
 }
 \examples{
-set.seed(1)
+set.seed(123)
 xdata <- data.frame(ID = sample(letters[1:4], 30, replace = TRUE),
 context = sample(LETTERS[21:22], 30, replace = TRUE),
 var1 = rnorm(30), var2 = rnorm(30))
@@ -44,11 +44,10 @@ balancedataset(xdata = xdata, whattobalance = c("context"))$seldata
 # with two factors
 balancedataset(xdata = xdata, whattobalance = c("context", "ID"), n = 1)$seldata
 
-# a case where one combination occurs only once (hence n = 1): row 13 has to be in each data set
-xdata2 <- xdata[-9, ]
-table(xdata2$ID, xdata2$context)
+# one combination occurs only once (d/V): row 27 has to be in each data set
+table(xdata$ID, xdata$context)
 x <- sapply(1:50, function(X){
-  row.names(balancedataset(xdata = xdata2, whattobalance = c("context", "ID"))$seldata)
+  row.names(balancedataset(xdata = xdata, whattobalance = c("context", "ID"))$seldata)
 })
 table(x)
 
