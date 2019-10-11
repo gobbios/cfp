@@ -3,6 +3,7 @@
 export(addfiglabel)
 export(autocorr)
 export(balancedataset)
+export(bootstrap_model)
 export(coloralpha)
 export(decaxis)
 export(drawcircle)

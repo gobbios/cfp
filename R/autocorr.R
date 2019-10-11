@@ -8,7 +8,7 @@
 #' @param doplot logical, should a plot be produced
 #' @param plot_sds numeric of length 2, the SDs for visualization if required
 #' @param opti_sds numeric of length 2, the SDs for the optimization
-#' @param opti_n numeric, the number of steps for the visualization
+#' @param plot_n numeric, the number of steps for the visualization
 #'
 #' @details This function is heavily based on code by Roger Mundry.
 #'
@@ -46,7 +46,7 @@
 
 autocorr <- function(modres, xdata, corrvar, contrfac, doplot = TRUE,
                      plot_sds = c(0.001, 2), opti_sds = c(0.001, 1),
-                     opti_n = 51, stdzcorr = TRUE) {
+                     plot_n = 51, stdzcorr = TRUE) {
 
   if (stdzcorr) {
     corrvar <- scale(xdata[, corrvar])
@@ -87,7 +87,7 @@ autocorr <- function(modres, xdata, corrvar, contrfac, doplot = TRUE,
   }
 
   if (doplot) {
-    sds <- seq(plot_sds[1], plot_sds[2], length.out = opti_n)
+    sds <- seq(plot_sds[1], plot_sds[2], length.out = plot_n)
     aics <- sapply(sds, acinternal)
     plot(sds, aics, typ = "l", lwd = 3)
     # abline(v = optiSDs, lty = 3)

@@ -5,7 +5,7 @@
 \title{calculate an auto-correlation term}
 \usage{
 autocorr(modres, xdata, corrvar, contrfac, doplot = TRUE,
-  plot_sds = c(0.001, 2), opti_sds = c(0.001, 1), opti_n = 51,
+  plot_sds = c(0.001, 2), opti_sds = c(0.001, 1), plot_n = 51,
   stdzcorr = TRUE)
 }
 \arguments{
@@ -23,7 +23,7 @@ autocorr(modres, xdata, corrvar, contrfac, doplot = TRUE,
 
 \item{opti_sds}{numeric of length 2, the SDs for the optimization}
 
-\item{opti_n}{numeric, the number of steps for the visualization}
+\item{plot_n}{numeric, the number of steps for the visualization}
 
 \item{stdzcorr}{logical, should the correlation-variable \code{corrvar} be z-transformed}
 }
