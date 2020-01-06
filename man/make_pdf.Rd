@@ -4,18 +4,30 @@
 \alias{make_pdf}
 \title{compile tex files using biber for bibliographies}
 \usage{
-make_pdf(texfile, clean_up = FALSE, open_file = FALSE)
+make_pdf(texfile, bibfolder, figfolder, clean_up = FALSE,
+  open_file = FALSE, drytest = FALSE)
 }
 \arguments{
 \item{texfile}{character, file name of tex source file}
 
+\item{bibfolder}{character, folder location of bib files}
+
+\item{figfolder}{character, folder location of figures for inclusion}
+
 \item{clean_up}{logical, should auxillary files be removed (by default \code{FALSE})}
 
 \item{open_file}{logical, should the result be opened in the system viewer (by default \code{FALSE}). This probably works on MacOS anyway...}
+
+\item{drytest}{logical, stop before compilation and return temp directory (default is \code{FALSE})}
 }
 \value{
 an invisible list with three entries for latex console output (corresponding to three latex passes) and one item for biber console output
 }
 \description{
 compile tex files using biber for bibliographies
+}
+\details{
+Note that the locations of tex files and folders must all start in the same place. For example, if I have my tex files in \code{documents/folder1/} and the corresponding figures in \code{documents/folder1/figures/}, while the references are in \code{documents/reffolder/} I need to start all locations from \code{documents}: \code{texfile = "folder1/mytex.tex"}, \code{figfolder = "folder1/figures/"} and \code{bibfolder = "reffolder/"}. This is all pretty convoluted, I realize, but it's due to the structure of my folder system.
+
+In addition, please notice that if there is something wrong with folder/file structure, R might crash (which is most likely due to \code{pdflatex} crashing when it doesn't find referenced files. It is therefore recommended to inspect the temp folder created by setting \code{drytest = TRUE}: this returns the location of the temp folder. You should check the \emph{relative} location of the different files is correct.
 }
