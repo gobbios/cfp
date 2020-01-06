@@ -21,6 +21,8 @@ objects are loaded and messages returned
 load knitr chunk cache interactively
 }
 \details{
-the function borrows heavily from the \code{qwraps2} package (via https://github.com/dewittpe/qwraps2)
+The function borrows heavily from the \code{qwraps2} package (via https://github.com/dewittpe/qwraps2).
+
+The messages that display which objects, if any, were loaded and which class they belong to might not be entirely reliable.
 }
 \keyword{knitr}
