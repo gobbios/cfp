@@ -4,9 +4,17 @@
 \alias{autocorr}
 \title{calculate an auto-correlation term}
 \usage{
-autocorr(modres, xdata, corrvar, contrfac, doplot = TRUE,
-  plot_sds = c(0.001, 2), opti_sds = c(0.001, 1), plot_n = 51,
-  stdzcorr = TRUE)
+autocorr(
+  modres,
+  xdata,
+  corrvar,
+  contrfac,
+  doplot = TRUE,
+  plot_sds = c(0.001, 2),
+  opti_sds = c(0.001, 1),
+  plot_n = 51,
+  stdzcorr = TRUE
+)
 }
 \arguments{
 \item{modres}{the model result object from \code{(g)lmer}}

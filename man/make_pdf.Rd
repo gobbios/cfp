@@ -4,8 +4,14 @@
 \alias{make_pdf}
 \title{compile tex files using biber for bibliographies}
 \usage{
-make_pdf(texfile, bibfolder, figfolder, clean_up = FALSE,
-  open_file = FALSE, drytest = FALSE)
+make_pdf(
+  texfile,
+  bibfolder,
+  figfolder,
+  clean_up = FALSE,
+  open_file = FALSE,
+  drytest = FALSE
+)
 }
 \arguments{
 \item{texfile}{character, file name of tex source file}

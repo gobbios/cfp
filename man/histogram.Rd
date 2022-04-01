@@ -4,8 +4,14 @@
 \alias{histogram}
 \title{histogram with overlay}
 \usage{
-histogram(num, fac, bins = 50, colours = c("red", "blue", "grey",
-  "gold"), xlab = "", numrange = c(NA, NA))
+histogram(
+  num,
+  fac,
+  bins = 50,
+  colours = c("red", "blue", "grey", "gold"),
+  xlab = "",
+  numrange = c(NA, NA)
+)
 }
 \arguments{
 \item{num}{numerical vector}

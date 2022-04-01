@@ -4,7 +4,9 @@
 \name{authornames}
 \alias{authornames}
 \title{Author names data set}
-\format{A character vector}
+\format{
+A character vector
+}
 \usage{
 authornames
 }

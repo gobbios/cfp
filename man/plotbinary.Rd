@@ -4,9 +4,21 @@
 \alias{plotbinary}
 \title{Plot raw data for binomial data}
 \usage{
-plotbinary(xdata, response, pred, pstructure = NULL, agg = FALSE,
-  aggcol = NULL, xlimsglobal = FALSE, cexfac = pi, bin = NULL,
-  pch = NULL, col = NULL, ylim = NULL, ...)
+plotbinary(
+  xdata,
+  response,
+  pred,
+  pstructure = NULL,
+  agg = FALSE,
+  aggcol = NULL,
+  xlimsglobal = FALSE,
+  cexfac = pi,
+  bin = NULL,
+  pch = NULL,
+  col = NULL,
+  ylim = NULL,
+  ...
+)
 }
 \arguments{
 \item{xdata}{a data frame}

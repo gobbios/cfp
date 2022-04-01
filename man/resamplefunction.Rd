@@ -4,8 +4,15 @@
 \alias{resamplefunction}
 \title{resample function}
 \usage{
-resamplefunction(model, dat, N, termsref = NULL, useparallel = TRUE,
-  stepsalong = 11, allcores = FALSE)
+resamplefunction(
+  model,
+  dat,
+  N,
+  termsref = NULL,
+  useparallel = TRUE,
+  stepsalong = 11,
+  allcores = FALSE
+)
 }
 \arguments{
 \item{model}{a model fit from \code{glmmadmb}}

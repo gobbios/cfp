@@ -4,8 +4,7 @@
 \alias{transitions}
 \title{Transitions between elements of a sequence}
 \usage{
-transitions(S, strucmat = NULL, xstart = TRUE, xstop = FALSE,
-  out = "ml")
+transitions(S, strucmat = NULL, xstart = TRUE, xstop = FALSE, out = "ml")
 }
 \arguments{
 \item{S}{character, the sequence}

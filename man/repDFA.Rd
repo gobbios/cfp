@@ -4,8 +4,7 @@
 \alias{repDFA}
 \title{repeated DFAs with balanced subsets}
 \usage{
-repDFA(xdata, testfactor, balancefactor, varnames, npercomb = NULL,
-  nrand = 20)
+repDFA(xdata, testfactor, balancefactor, varnames, npercomb = NULL, nrand = 20)
 }
 \arguments{
 \item{xdata}{a \code{data.frame} with the data}

@@ -4,8 +4,11 @@
 \alias{cacheload}
 \title{load knitr chunk cache interactively}
 \usage{
-cacheload(chunk, path = knitr::opts_chunk$get("cache.path"),
-  envir = parent.frame())
+cacheload(
+  chunk,
+  path = knitr::opts_chunk$get("cache.path"),
+  envir = parent.frame()
+)
 }
 \arguments{
 \item{chunk}{character, the name of the chunk}
